@@ -6,7 +6,8 @@ from src.projectile import Projectile
 from src.target import Target
 from src.environment import Environment
 from src.solveDU import finding_move
-from src.graphs import draw_graphs
+from src.graphs import draw_3graphs
+from src.random_shoot import random_shoot
 
 
 def main():
@@ -19,7 +20,10 @@ def main():
         'air_resistance': 0.04,
         'turn_angle': 60,
         'inclination_angle': 45,
-    }  # еще 3 параметра (которые на оценку отлично)
+        'delta_turn': 5,
+        'delta_inclination': 5,
+        'delta_speed': 5
+    }
 
     gun_location = conditions.get('gun_location', ((0, 0), (0, 0)))
     projectile_mass = conditions.get('projectile_mass', 0)
@@ -28,6 +32,9 @@ def main():
     air_resistance = conditions.get('air_resistance', 0)
     turn_angle = conditions.get('turn_angle', 0)
     inclination_angle = conditions.get('inclination_angle', 0)
+    delta_turn = conditions.get('delta_turn', 0)
+    delta_inclination = conditions.get('delta_inclination', 0)
+    delta_speed = conditions.get('delta_speed', 0)
 
     gun = Gun()
     projectile = Projectile(projectile_mass=projectile_mass, initial_speed=initial_speed)
@@ -37,13 +44,14 @@ def main():
     gun.set_location(location=gun_location)
     environment.set_K(value=air_resistance)
 
-    gun.shoot(inclination=inclination_angle,
-              turn=turn_angle,
-              projectile=projectile,
-              air_resistance=air_resistance)
+    moving_length = gun.shoot(inclination=inclination_angle,
+                              turn=turn_angle,
+                              projectile=projectile,
+                              air_resistance=air_resistance)
 
     result = projectile.inTheTarget(target=target)
 
+    print(f'Длина перемещения - {moving_length}')
     print(f'Координаты падения снаряда - {projectile.position}')
     print(f'Попал? - {result}')
 
@@ -66,7 +74,20 @@ def main():
     time = list(linspace(0, len(speed), len(speed)))
 
     # Вывод графиков.
-    draw_graphs(x_trajectory, y_trajectory, time, speed, gun, projectile, target)
+    draw_3graphs(x_trajectory, y_trajectory, time, speed, gun, projectile, target)
+
+    # Добавляем погрешность и составляем результирующий csv файл о результатах 100 выстрелов со случайностями.
+    random_shoot(gun=gun,
+                 projectile=projectile,
+                 target=target,
+                 inclination=inclination_angle,
+                 turn=turn_angle,
+                 air_resistance=air_resistance,
+                 delta_inclination=delta_inclination,
+                 delta_turn=delta_turn,
+                 delta_speed=delta_speed)
+
+    # Идем в shoots_plot и запускаем.
 
 
 if __name__ == '__main__':

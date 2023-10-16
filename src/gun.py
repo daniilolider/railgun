@@ -33,7 +33,7 @@ class Gun:
               turn: float,
               projectile: Projectile,
               air_resistance: float,
-              ) -> None:
+              ) -> float:
         """
         Выстрел с пушки.
 
@@ -41,7 +41,7 @@ class Gun:
         :param turn: Угол поворота пушки.
         :param projectile: Снаряд, которым будем стрелять.
         :param air_resistance: Коэффициент сопротивления среды, в которой происходит выстрел.
-        :return: None.
+        :return: Дальность полёта снаряда.
         """
         # Длина перемещения снаряда.
         moving_length = finding_move(m=projectile.projectile_mass,
@@ -49,10 +49,12 @@ class Gun:
                                      v0=projectile.initial_speed,
                                      alpha=inclination,
                                      end_t=100)[0]
-        print(f'Длина перемещения - {moving_length}')
+
         # Новые координаты после падения снаряда.
         new_x = moving_length * cos(radians(turn)) + self.x
         new_y = moving_length * sin(radians(turn)) + self.y
 
         # Переопределяем координаты снаряда.
         projectile.position = [new_x, new_y]
+
+        return moving_length

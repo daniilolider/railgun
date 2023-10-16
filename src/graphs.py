@@ -1,20 +1,21 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from numpy import linspace, arange
+import csv
 
 from .gun import Gun
 from .projectile import Projectile
 from .target import Target
 
 
-def draw_graphs(x_trajectory: list,
-                y_trajectory: list,
-                time: list,
-                speed: list,
-                gun: Gun,
-                projectile: Projectile,
-                target: Target
-                ) -> None:
+def draw_3graphs(x_trajectory: list,
+                 y_trajectory: list,
+                 time: list,
+                 speed: list,
+                 gun: Gun,
+                 projectile: Projectile,
+                 target: Target
+                 ) -> None:
     """
     Рисует графики: траектории полёта снаряда, скорости снаряда
     и иллюстрацию расположения стартовой точки, мишени и точки падения снаряда.
@@ -35,7 +36,7 @@ def draw_graphs(x_trajectory: list,
     plt.subplot2grid((2, 2), (0, 0), colspan=2)
     plt.xlabel("x")
     plt.ylabel("y")
-    plt.title('Траектория полета снаряда', fontsize=20, fontname='Times New Roman')
+    plt.title('Траектория полета снаряда', fontsize=20)
     plt.xticks(linspace(0, max(x_trajectory), 12))
     plt.yticks(linspace(0, max(y_trajectory), 10))
     plt.plot(x_trajectory, y_trajectory)
@@ -45,7 +46,7 @@ def draw_graphs(x_trajectory: list,
     plt.subplot2grid((2, 2), (1, 0), colspan=2)
     plt.xlabel("t")
     plt.ylabel("V(t)")
-    plt.title('Скорость снаряда', fontsize=20, fontname='Times New Roman')
+    plt.title('Скорость снаряда', fontsize=20)
     plt.xticks(linspace(0, max(time), 12))
     plt.yticks(linspace(0, max(speed), 12))
     plt.plot(time, speed, color='red')
@@ -113,5 +114,7 @@ def draw_graphs(x_trajectory: list,
     arrow_fmt = dict(markersize=4, color='black', clip_on=False)
     ax.plot(1, 0, marker='>', transform=ax.get_yaxis_transform(), **arrow_fmt)
     ax.plot(0, 1, marker='^', transform=ax.get_xaxis_transform(), **arrow_fmt)
+
+    plt.title('Иллюстрация эксперимента', fontsize=20)
 
     plt.show()  # Выводим.
