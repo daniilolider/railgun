@@ -15,10 +15,11 @@ def random_shoot(gun: Gun,
                  air_resistance: float,
                  delta_turn: float,
                  delta_inclination: float,
-                 delta_speed: float
+                 delta_speed: float,
+                 count: int = 100
                  ) -> None:
     """
-    100 случайных выстрелов пушкой. Запись результатов в csv файл.
+    100 случайных выстрелов пушкой. Запись результатов в csv файл. Количество выстрелов можно задавать.
 
     :param gun: Пушка, из которой будем стрелять.
     :param projectile: Снаряд, которым будем стрелять.
@@ -29,7 +30,8 @@ def random_shoot(gun: Gun,
     :param delta_speed: Границы погрешности угла поворота пушки.
     :param delta_inclination: Границы погрешности угла наклона пушки.
     :param delta_turn: Границы погрешности начальной скорости снаряда.
-    :return:
+    :param count: Количество итераций.
+    :return: None.
     """
 
     # Один раз открыли и по новой переписали csv файл.
@@ -49,7 +51,7 @@ def random_shoot(gun: Gun,
                               'Результат попадания'])
 
         # 100 случайных выстрелов. Каждый выстрел записываем в файл.
-        for i in range(1, 101):
+        for i in range(1, count + 1):
 
             # Случайные величины, на которые происходит ошибка при выстреле.
             error_inclination_value = uniform(-delta_inclination, delta_inclination)
@@ -62,6 +64,7 @@ def random_shoot(gun: Gun,
 
             # Сохраняем скорость, чтобы вернуть ее в конце случайного эксперимента.
             speed_save = deepcopy(projectile.initial_speed)
+
             # Переопределяем скорость.
             projectile.initial_speed += error_speed_value
 
@@ -69,7 +72,7 @@ def random_shoot(gun: Gun,
             moving_length = gun.shoot(inclination=new_inclination,
                                       turn=new_turn,
                                       projectile=projectile,
-                                      air_resistance=air_resistance)
+                                      air_resistance=air_resistance)[0]
 
             # Попали или нет
             result = projectile.inTheTarget(target=target)
